@@ -736,7 +736,7 @@
 
     @media (max-width: 650px) {
       .quick-nav {
-        display: none; /* Keeps top bar ultra-clean and single-line on phones */
+        display: none;
       }
       .hero h2 { font-size: 1.9rem; }
       .hero h3 { font-size: 1.02rem; }
@@ -990,7 +990,7 @@
     <p id="footerCopyText">© 2026 <strong>पवित्र बंधन - मैरिज हॉल एंड लॉन (Pavitra Bandhan - Marriage Hall & Lawn)</strong>, महादेवा रोड, सिवान (बिहार) | सर्वाधिकार सुरक्षित।</p>
   </footer>
 
-  <!-- ==================== SCRIPTS (SFX, LANGUAGE, FIREBASE, AUTO-PLAY) ==================== -->
+  <!-- ==================== SCRIPTS (SFX, LANGUAGE, FIREBASE, CLOUDINARY AUTO-PLAY) ==================== -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -1032,7 +1032,6 @@
       try {
         initAudio();
         if (!audioCtx) return;
-        // Royal Major Pentatonic Arpeggio Chime
         const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
         notes.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
@@ -1082,7 +1081,6 @@
       }, 1250);
     };
 
-    // Auto open after 2.8 seconds if user doesn't click
     setTimeout(() => {
       if (!curtainOpened) {
         window.openRoyalCurtain();
@@ -1243,7 +1241,6 @@
       if (emptyV) emptyV.textContent = t.emptyVideos;
     };
 
-    // Apply initial language
     window.setLanguage(currentLang);
 
     // 6. Site Settings Listener (Logo, Phone, WhatsApp, Email, Instagram, Facebook, Address)
@@ -1263,13 +1260,11 @@
       }
       const s = currentSettings;
 
-      // Update Logo in Header & Intro
       if (s.logoUrl) {
         document.getElementById("headerLogoImg").src = s.logoUrl;
         document.getElementById("introLogoImg").src = s.logoUrl;
       }
 
-      // Update Phone, Email, Address in Contact & Footer
       const cleanPhone = (s.phone || "07520750999").replace(/\s+/g, "");
       document.getElementById("userPhoneDisplay").textContent = s.phone;
       document.getElementById("userPhoneDisplay").href = "tel:" + cleanPhone;
@@ -1283,7 +1278,6 @@
 
       document.getElementById("userAddressDisplay").textContent = s.address;
 
-      // Instagram
       const instaVal = s.instagram || "@pavitrabandhan_siwan";
       const instaUrl = instaVal.startsWith("http")
         ? instaVal
@@ -1293,7 +1287,6 @@
       document.getElementById("footerInstaText").textContent = instaVal;
       document.getElementById("footerInsta").href = instaUrl;
 
-      // Facebook
       const fbVal = s.facebook || "Pavitra Bandhan Marriage Hall & Lawn";
       const fbUrl = fbVal.startsWith("http")
         ? fbVal
@@ -1304,7 +1297,7 @@
       document.getElementById("footerFb").href = fbUrl;
     });
 
-    // 7. Photo Gallery Realtime Listener (Original Aspect Ratio, No Cropping)
+    // 7. Photo Gallery Realtime Listener (Optimized for 60-70+ Photos with Lazy & Async Decoding)
     onValue(ref(db, "gallery/photos"), (snapshot) => {
       const userGallery = document.getElementById("userPhotoGallery");
       userGallery.innerHTML = "";
@@ -1315,26 +1308,49 @@
       }
 
       const data = snapshot.val();
+      const fragment = document.createDocumentFragment();
+
       Object.keys(data).reverse().forEach((id) => {
         const item = data[id];
+        if (!item || !item.url) return;
+
         const card = document.createElement("div");
         card.className = "media-card";
         card.innerHTML = `
-          <img src="${item.url}" alt="${item.title || 'Pavitra Bandhan Marriage Hall & Lawn Siwan'}" loading="lazy" />
+          <img src="${item.url}" alt="${item.title || 'Pavitra Bandhan Marriage Hall & Lawn Siwan'}" loading="lazy" decoding="async" />
           <div class="media-card-body">
             <span class="media-card-title">${item.title || ''}</span>
           </div>
         `;
-        userGallery.appendChild(card);
+        fragment.appendChild(card);
       });
+
+      userGallery.appendChild(fragment);
     });
 
-    // 8. Video Gallery Realtime Listener + Scroll Auto-Play Observer
+    // 8. Cloudinary Video Helper & Scroll Auto-Play Observer
+    function getOptimizedCloudinaryVideo(rawUrl) {
+      if (!rawUrl || typeof rawUrl !== "string") return { src: "", poster: "" };
+      if (rawUrl.includes("res.cloudinary.com") && rawUrl.includes("/video/upload/")) {
+        const optimizedSrc = rawUrl.replace("/video/upload/", "/video/upload/f_auto,q_auto/");
+        const posterUrl = rawUrl
+          .replace("/video/upload/", "/video/upload/so_auto,f_jpg,q_auto/")
+          .replace(/\.(mp4|webm|mov|mkv|avi)$/i, ".jpg");
+        return { src: optimizedSrc, poster: posterUrl };
+      }
+      return { src: rawUrl, poster: "" };
+    }
+
     const videoObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const vid = entry.target;
         if (entry.isIntersecting && entry.intersectionRatio >= 0.55) {
-          // Try playing when scrolled into view
+          // Pause any other playing video so only one plays at a time
+          document.querySelectorAll("#userVideoGallery video").forEach((otherVid) => {
+            if (otherVid !== vid && !otherVid.paused) {
+              otherVid.pause();
+            }
+          });
           vid.play().catch(() => {
             vid.muted = true;
             vid.play().catch(() => {});
@@ -1364,16 +1380,25 @@
       }
 
       const data = snapshot.val();
+      const fragment = document.createDocumentFragment();
+
       Object.keys(data).reverse().forEach((id) => {
         const item = data[id];
-        const videoSrc = item.base64Data || item.url || "";
+        if (!item) return;
+
+        // Prioritize Cloudinary URL first, fallback to Base64 if any old video exists
+        const rawVideoSource = item.url || item.base64Data || "";
+        if (!rawVideoSource) return;
+
+        const { src, poster } = getOptimizedCloudinaryVideo(rawVideoSource);
         const vidDomId = "vid_" + id;
+        const posterAttr = poster ? `poster="${poster}"` : "";
 
         const card = document.createElement("div");
         card.className = "media-card";
         card.innerHTML = `
           <div class="video-wrapper">
-            <video id="${vidDomId}" src="${videoSrc}" playsinline loop muted controls preload="metadata"></video>
+            <video id="${vidDomId}" src="${src}" ${posterAttr} playsinline loop muted controls preload="metadata"></video>
             <button class="mute-toggle-btn" onclick="toggleVideoMute(this, '${vidDomId}')" title="आवाज़ चालू/बंद करें">
               <i class="fa-solid fa-volume-xmark"></i>
             </button>
@@ -1382,13 +1407,15 @@
             <span class="media-card-title">${item.title || ''}</span>
           </div>
         `;
-        userVideoGallery.appendChild(card);
+        fragment.appendChild(card);
 
         const videoElement = card.querySelector("video");
         if (videoElement) {
           videoObserver.observe(videoElement);
         }
       });
+
+      userVideoGallery.appendChild(fragment);
     });
 
     // 9. Send Inquiry to WhatsApp
