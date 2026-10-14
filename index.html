@@ -108,6 +108,7 @@
       position: fixed;
       inset: 0;
       z-index: 99999;
+      background: #38040d; /* Fix: Solid background prevents homepage flash before load */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -169,6 +170,8 @@
     .intro-logo {
       width: 82px;
       height: 82px;
+      max-width: 82px;
+      max-height: 82px;
       border-radius: 50%;
       object-fit: cover;
       border: 2.5px solid var(--gold-light);
@@ -238,6 +241,8 @@
     .nav-logo {
       width: 38px;
       height: 38px;
+      max-width: 38px;
+      max-height: 38px;
       border-radius: 50%;
       object-fit: cover;
       border: 1.5px solid var(--gold-light);
@@ -991,7 +996,8 @@
     <div class="curtain-left"></div>
     <div class="curtain-right"></div>
     <div class="intro-center-box">
-      <img id="introLogoImg" class="intro-logo" src="https://i.ibb.co/TDbGMSXY/56456.png" alt="Pavitra Bandhan Marriage Hall & Lawn Logo" />
+      <!-- FIXED: Added explicit width, height and inline style to prevent giant image flash -->
+      <img id="introLogoImg" class="intro-logo" src="https://i.ibb.co/TDbGMSXY/56456.png" alt="Logo" width="82" height="82" style="width: 82px; height: 82px; object-fit: cover;" />
       <h2 id="introTitle">पवित्र बंधन - मैरिज हॉल एंड लॉन</h2>
       <p id="introSub">Pavitra Bandhan - Marriage Hall & Lawn, Siwan</p>
       <button class="enter-btn" onclick="openRoyalCurtain()">
@@ -1003,7 +1009,8 @@
   <!-- ==================== SLEEK COMPACT HEADER ==================== -->
   <header>
     <div class="brand-wrap" onclick="showAllBusinessesDirectory()">
-      <img id="headerLogoImg" class="nav-logo" src="https://i.ibb.co/TDbGMSXY/56456.png" alt="Pavitra Bandhan Marriage Hall & Lawn Logo" />
+      <!-- FIXED: Added explicit width, height and inline style -->
+      <img id="headerLogoImg" class="nav-logo" src="https://i.ibb.co/TDbGMSXY/56456.png" alt="Logo" width="38" height="38" style="width: 38px; height: 38px; object-fit: cover;" />
       <div class="brand-text">
         <h1 id="navBrandTitle">पवित्र बंधन - मैरिज हॉल एंड लॉन</h1>
         <span id="navBrandSub">PAVITRA BANDHAN MARRIAGE HALL & LAWN, SIWAN</span>
@@ -1024,9 +1031,7 @@
   </header>
 
   <!-- ==================== QUICK BUSINESS TABS BAR ==================== -->
-  <div class="biz-tabs-strip" id="bizTabsStrip">
-    <!-- Dynamically populated with All Services + Marriage Hall + any Admin-added Businesses -->
-  </div>
+  <div class="biz-tabs-strip" id="bizTabsStrip"></div>
 
   <!-- ==================== VIEW 1: MAIN BUSINESSES / SERVICES DIRECTORY ==================== -->
   <div id="homeDirectoryView">
@@ -1044,16 +1049,13 @@
         <p id="dirSecSub">जिस सेवा के फोटो-वीडियो देखना या बुकिंग करना चाहते हैं, उस कार्ड पर दबाएं</p>
       </div>
 
-      <div class="business-grid" id="businessDirectoryGrid">
-        <!-- Cards rendered dynamically -->
-      </div>
+      <div class="business-grid" id="businessDirectoryGrid"></div>
     </section>
   </div>
 
   <!-- ==================== VIEW 2: DEDICATED BUSINESS INNER PAGE ==================== -->
   <main id="businessDetailView">
 
-    <!-- Back to All Services Bar -->
     <div class="back-bar">
       <button class="back-btn" onclick="showAllBusinessesDirectory()">
         <i class="fa-solid fa-arrow-left"></i> <span id="btnBackToDir">सभी सेवाएं देखें (All Services)</span>
@@ -1152,7 +1154,6 @@
       </div>
 
       <div class="contact-map-wrapper">
-        <!-- Contact Details & Map Preview -->
         <div class="info-box">
           <h3 id="contactBoxHeading" style="color: var(--primary-dark); margin-bottom: 18px; font-family: 'Rozha One', serif; font-size: 1.5rem;">
             पवित्र बंधन - मैरिज हॉल एंड लॉन
@@ -1194,13 +1195,11 @@
             </a>
           </div>
 
-          <!-- Google Map Live Preview -->
           <div class="map-iframe-container">
             <iframe id="googleMapIframe" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
         </div>
 
-        <!-- WhatsApp Inquiry Form -->
         <div class="inquiry-box">
           <h3 style="color: var(--primary-dark); margin-bottom: 12px; font-size: 1.3rem;">
             <i class="fa-brands fa-whatsapp" style="color: #25D366;"></i>
@@ -1260,7 +1259,6 @@
 
   </main>
 
-  <!-- ==================== FOOTER (BOTTOM DETAILS) ==================== -->
   <footer>
     <div class="footer-contact-strip">
       <a href="tel:07520750999" id="footerPhone"><i class="fa-solid fa-phone"></i> <span>075207 50999</span></a>
@@ -1271,12 +1269,11 @@
     <p id="footerCopyText">© 2026 <strong>पवित्र बंधन - मैरिज हॉल एंड लॉन (Pavitra Bandhan - Marriage Hall & Lawn)</strong>, महादेवा रोड, सिवान (बिहार) | सर्वाधिकार सुरक्षित।</p>
   </footer>
 
-  <!-- ==================== SCRIPTS (MULTI-BUSINESS PORTAL, SFX, LANGUAGE, FIREBASE) ==================== -->
+  <!-- ==================== SCRIPTS ==================== -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // 1. Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyAWWyF3ur8aYNA5Dd2qXrLIgXOlX2ut5D0",
       authDomain: "marraigehall-1221a.firebaseapp.com",
@@ -1290,14 +1287,12 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // 2. Google Map Links
     const mapShortUrl = ["https://maps.app.goo", "gl/bvAkv8HwKArya1WLA?g_st=ac"].join(".");
     const mapEmbedBase = ["https://maps.google", "com/maps"].join(".");
     document.getElementById("directMapBtn").href = mapShortUrl;
     document.getElementById("googleMapIframe").src =
       mapEmbedBase + "?q=Pavitra+Bandhan+Marriage+Hall+Mahadeva+Rd+Siwan+Bihar+841227&t=&z=16&ie=UTF8&iwloc=&output=embed";
 
-    // 3. Web Audio API Royal Sound Effects (SFX)
     let audioCtx = null;
     function initAudio() {
       if (!audioCtx) {
@@ -1349,7 +1344,6 @@
       } catch (e) {}
     }
 
-    // 4. Intro Curtain Open Logic
     let curtainOpened = false;
     window.openRoyalCurtain = function() {
       if (curtainOpened) return;
@@ -1368,13 +1362,10 @@
       }
     }, 2800);
 
-    // 5. Complete Hindi / English Translation Dictionary
     let currentLang = localStorage.getItem("pb_lang") || "hi";
 
     const translations = {
       hi: {
-        navBrandTitle: "पवित्र बंधन - मैरिज हॉल एंड लॉन",
-        navBrandSub: "PAVITRA BANDHAN MARRIAGE HALL & LAWN, SIWAN",
         topAllServicesText: "सभी सेवाएं",
         portalWelcomeTitle: "पवित्र बंधन - हमारे प्रतिष्ठान एवं सेवाएं",
         portalWelcomeSub: "नीचे दिए गए हमारे प्रतिष्ठानों और सेवाओं पर क्लिक करके उनके फोटो, वीडियो, पूरी जानकारी और बुकिंग का पेज खोलें",
@@ -1383,10 +1374,6 @@
         btnBackToDir: "सभी सेवाएं देखें (All Services)",
         exploreBtnText: "फोटो, वीडियो और बुकिंग देखें",
         allTabLabel: "सभी सेवाएं",
-        defaultHallName: "पवित्र बंधन - मैरिज हॉल एंड लॉन",
-        defaultHallSub: "Pavitra Bandhan - Marriage Hall & Lawn",
-        defaultHallBadge: "मैरिज हॉल एवं लॉन • 4.0 ★",
-        defaultHallDesc: "ओपी थाना के पास, एसबीआई के सामने, मिशन, महादेवा रोड, सिवान (बिहार) में स्थित आपके शुभ विवाह, सगाई, रिसेप्शन और सभी मांगलिक कार्यक्रमों के लिए भव्य मैरिज हॉल एंड लॉन।",
         heroBtnBook: "अभी बुकिंग इंक्वायरी करें",
         heroBtnGallery: "फोटो और वीडियो देखें",
         featTitle: "हमारी प्रमुख सुविधाएं",
@@ -1427,13 +1414,11 @@
         lblInqMsg: "आपका संदेश या विशेष आवश्यकता (Message)",
         inqMsgPlaceholder: "बुकिंग से जुड़ा कोई सवाल हो तो लिखें...",
         btnSendInqText: "WhatsApp पर इंक्वायरी भेजें",
-        footerCopyText: "© 2026 <strong>पवित्र बंधन - मैरिज हॉल एंड लॉन (Pavitra Bandhan - Marriage Hall & Lawn)</strong>, महादेवा रोड, सिवान (बिहार) | सर्वाधिकार सुरक्षित।",
+        footerCopyText: "© 2026 <strong>पवित्र बंधन - मैरिज हॉल एंड लॉन</strong>, महादेवा रोड, सिवान (बिहार) | सर्वाधिकार सुरक्षित।",
         emptyPhotos: "इस सेक्शन में अभी कोई फोटो अपलोड नहीं किया गया है।",
         emptyVideos: "इस सेक्शन में अभी कोई वीडियो अपलोड नहीं किया गया है।"
       },
       en: {
-        navBrandTitle: "Pavitra Bandhan",
-        navBrandSub: "MARRIAGE HALL & LAWN, SIWAN",
         topAllServicesText: "All Services",
         portalWelcomeTitle: "Pavitra Bandhan Group & Services",
         portalWelcomeSub: "Click on any of our ventures or services below to view its dedicated photo gallery, videos, details, and booking page",
@@ -1442,10 +1427,6 @@
         btnBackToDir: "Back to All Services",
         exploreBtnText: "View Photos, Videos & Book Now",
         allTabLabel: "All Services",
-        defaultHallName: "Pavitra Bandhan - Marriage Hall & Lawn",
-        defaultHallSub: "Luxury Wedding Hall, Banquet & Lawn in Siwan",
-        defaultHallBadge: "Marriage Hall & Lawn • 4.0 ★",
-        defaultHallDesc: "Located near OP Thana, in front of SBI, Mission, Mahadeva Road, Siwan (Bihar) — the perfect royal marriage hall and spacious lawn for weddings, engagements, receptions, and grand celebrations.",
         heroBtnBook: "Send Booking Inquiry",
         heroBtnGallery: "View Photos & Videos",
         featTitle: "Our Key Highlights",
@@ -1492,14 +1473,18 @@
       }
     };
 
-    // ================= STATE FOR MULTI-BUSINESS SYSTEM =================
-    let activeBusinessId = null; // null = Directory View; 'default_hall' or custom bizId = Detail View
+    let activeBusinessId = null;
     let defaultHallPhotos = {};
     let defaultHallVideos = {};
-    let customBusinesses = {}; // Loaded from Firebase 'businesses' node
+    let customBusinesses = {};
 
-    let currentSettings = {
+    let siteSettings = {
       logoUrl: "https://i.ibb.co/TDbGMSXY/56456.png",
+      hallName: "पवित्र बंधन - मैरिज हॉल एंड लॉन",
+      hallNameEn: "Pavitra Bandhan - Marriage Hall & Lawn",
+      hallSubtitle: "बिताएं कुछ यादगार पल, अपने ही आँगन में।",
+      hallCategory: "मैरिज हॉल एवं लॉन • 4.0 ★",
+      hallDesc: "ओपी थाना के पास, एसबीआई के सामने, मिशन, महादेवा रोड, सिवान (बिहार) में स्थित आपके शुभ विवाह, सगाई, रिसेप्शन और सभी मांगलिक कार्यक्रमों के लिए भव्य मैरिज हॉल एंड लॉन।",
       hallCoverUrl: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1600&q=80",
       phone: "075207 50999",
       whatsapp: "917520750999",
@@ -1509,30 +1494,31 @@
       address: "Near OP Thana, In front of SBI, Mission, Mahadeva Rd, Mahadeva, Siwan, Bihar 841227"
     };
 
-    // Helper to get unified list of all businesses (Default Marriage Hall + Admin-added Businesses)
     function getAllBusinessesList() {
-      const t = translations[currentLang];
-      // Get first uploaded hall photo as cover fallback if available
       const photoKeys = Object.keys(defaultHallPhotos);
       const firstHallPhoto = photoKeys.length > 0
         ? defaultHallPhotos[photoKeys[photoKeys.length - 1]]?.url
         : null;
 
+      const hallTitle = (currentLang === "en" && siteSettings.hallNameEn) ? siteSettings.hallNameEn : (siteSettings.hallName || "Pavitra Bandhan - Marriage Hall & Lawn");
+      const hallSub = siteSettings.hallSubtitle || "बिताएं कुछ यादगार पल, अपने ही आँगन में।";
+      const hallCat = siteSettings.hallCategory || "मैरिज हॉल एवं लॉन • 4.0 ★";
+      const hallDesc = siteSettings.hallDesc || "ओपी थाना के पास, एसबीआई के सामने, मिशन, महादेवा रोड, सिवान (बिहार) में स्थित आपके शुभ विवाह, सगाई, रिसेप्शन और सभी मांगलिक कार्यक्रमों के लिए भव्य मैरिज हॉल एंड लॉन।";
+
       const list = [
         {
           id: "default_hall",
           isDefaultHall: true,
-          name: currentLang === "hi" ? t.defaultHallName : t.defaultHallName,
-          subtitle: t.defaultHallSub,
-          badge: t.defaultHallBadge,
-          description: t.defaultHallDesc,
-          coverUrl: currentSettings.hallCoverUrl || firstHallPhoto || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1200&q=80",
+          name: hallTitle,
+          subtitle: hallSub,
+          badge: hallCat,
+          description: hallDesc,
+          coverUrl: siteSettings.hallCoverUrl || firstHallPhoto || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1200&q=80",
           photos: defaultHallPhotos,
           videos: defaultHallVideos
         }
       ];
 
-      // Append all additional businesses created from Admin Panel
       Object.keys(customBusinesses).forEach((bizId) => {
         const b = customBusinesses[bizId];
         if (!b) return;
@@ -1543,10 +1529,10 @@
         list.push({
           id: bizId,
           isDefaultHall: false,
-          name: (currentLang === "en" && b.nameEn) ? b.nameEn : (b.name || b.title || "Service"),
-          subtitle: (currentLang === "en" && b.subtitleEn) ? b.subtitleEn : (b.subtitle || b.category || ""),
-          badge: (currentLang === "en" && b.categoryEn) ? b.categoryEn : (b.category || (currentLang === "hi" ? "विशेष सेवा" : "Our Service")),
-          description: (currentLang === "en" && b.descEn) ? b.descEn : (b.description || b.desc || ""),
+          name: (currentLang === "en" && b.nameEn) ? b.nameEn : (b.name || "Service"),
+          subtitle: b.subtitle || b.category || "",
+          badge: b.category || (currentLang === "hi" ? "विशेष सेवा" : "Our Service"),
+          description: b.description || "",
           coverUrl: b.coverUrl || firstPhoto || "https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=1200&q=80",
           photos: bizPhotos,
           videos: b.videos || {}
@@ -1556,12 +1542,10 @@
       return list;
     }
 
-    // Render Top Quick Tabs & Directory Grid
     function renderPortalUI() {
       const t = translations[currentLang];
       const allList = getAllBusinessesList();
 
-      // 1. Render Top Quick Tabs Strip
       const tabsStrip = document.getElementById("bizTabsStrip");
       tabsStrip.innerHTML = "";
 
@@ -1579,7 +1563,6 @@
         tabsStrip.appendChild(pill);
       });
 
-      // 2. Render Directory Cards
       const grid = document.getElementById("businessDirectoryGrid");
       grid.innerHTML = "";
 
@@ -1617,13 +1600,11 @@
         grid.appendChild(card);
       });
 
-      // 3. If a business page is currently open, refresh its content too
       if (activeBusinessId !== null) {
         renderActiveBusinessDetail();
       }
     }
 
-    // Open a Specific Business's Dedicated Page
     window.openBusinessPage = function(bizId) {
       playClickSFX();
       activeBusinessId = bizId;
@@ -1635,10 +1616,8 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // Return to Main Directory of All Businesses
     window.showAllBusinessesDirectory = function() {
       playClickSFX();
-      // Pause any playing videos
       document.querySelectorAll("#userVideoGallery video").forEach((v) => v.pause());
 
       activeBusinessId = null;
@@ -1650,14 +1629,12 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // Render Photos, Videos, Hero & Booking Info for Selected Business
     function renderActiveBusinessDetail() {
       const t = translations[currentLang];
       const allList = getAllBusinessesList();
       const biz = allList.find((b) => b.id === activeBusinessId) || allList[0];
       if (!biz) return;
 
-      // Update Hero Banner
       const heroBanner = document.getElementById("bizHeroBanner");
       heroBanner.style.backgroundImage = `linear-gradient(rgba(58, 6, 16, 0.78), rgba(58, 6, 16, 0.88)), url('${biz.coverUrl}')`;
 
@@ -1666,14 +1643,11 @@
       document.getElementById("heroSubTitle").textContent = biz.subtitle || "";
       document.getElementById("heroDesc").textContent = biz.description || "";
 
-      // Show Marriage Hall 4-feature cards only on the main hall page
       document.getElementById("hallHighlightsSection").style.display = biz.isDefaultHall ? "block" : "none";
 
-      // Update Contact & Inquiry Selected Service Label
       document.getElementById("contactBoxHeading").textContent = biz.name;
       document.getElementById("selectedBizLabel").textContent = t.selectedServicePrefix + biz.name;
 
-      // Render Photos for this Business
       const userGallery = document.getElementById("userPhotoGallery");
       userGallery.innerHTML = "";
       const photosObj = biz.photos || {};
@@ -1699,7 +1673,6 @@
         userGallery.appendChild(frag);
       }
 
-      // Render Videos for this Business
       const userVideoGallery = document.getElementById("userVideoGallery");
       userVideoGallery.innerHTML = "";
       const videosObj = biz.videos || {};
@@ -1743,7 +1716,6 @@
       }
     }
 
-    // Language Switcher Function
     window.setLanguage = function(lang) {
       currentLang = lang;
       localStorage.setItem("pb_lang", lang);
@@ -1754,7 +1726,7 @@
 
       const t = translations[lang];
       const ids = [
-        "navBrandTitle", "navBrandSub", "topAllServicesText",
+        "topAllServicesText",
         "portalWelcomeTitle", "portalWelcomeSub", "dirSecTitle", "dirSecSub", "btnBackToDir",
         "heroBtnBook", "heroBtnGallery",
         "featTitle", "featSub", "f1Title", "f1Desc", "f2Title", "f2Desc", "f3Title", "f3Desc", "f4Title", "f4Desc",
@@ -1780,12 +1752,11 @@
       renderPortalUI();
     };
 
-    // 6. Site Settings Listener
     onValue(ref(db, "siteSettings"), (snapshot) => {
       if (snapshot.exists()) {
-        currentSettings = { ...currentSettings, ...snapshot.val() };
+        siteSettings = { ...siteSettings, ...snapshot.val() };
       }
-      const s = currentSettings;
+      const s = siteSettings;
 
       if (s.logoUrl) {
         document.getElementById("headerLogoImg").src = s.logoUrl;
@@ -1806,18 +1777,14 @@
       document.getElementById("userAddressDisplay").textContent = s.address;
 
       const instaVal = s.instagram || "@pavitrabandhan_siwan";
-      const instaUrl = instaVal.startsWith("http")
-        ? instaVal
-        : "https://instagram.com/" + instaVal.replace("@", "").trim();
+      const instaUrl = instaVal.startsWith("http") ? instaVal : "https://instagram.com/" + instaVal.replace("@", "").trim();
       document.getElementById("userInstaDisplay").textContent = instaVal;
       document.getElementById("userInstaBtn").href = instaUrl;
       document.getElementById("footerInstaText").textContent = instaVal;
       document.getElementById("footerInsta").href = instaUrl;
 
       const fbVal = s.facebook || "Pavitra Bandhan Marriage Hall & Lawn";
-      const fbUrl = fbVal.startsWith("http")
-        ? fbVal
-        : "https://facebook.com/search/top/?q=" + encodeURIComponent(fbVal);
+      const fbUrl = fbVal.startsWith("http") ? fbVal : "https://facebook.com/search/top/?q=" + encodeURIComponent(fbVal);
       document.getElementById("userFbDisplay").textContent = fbVal;
       document.getElementById("userFbBtn").href = fbUrl;
       document.getElementById("footerFbText").textContent = fbVal;
@@ -1826,7 +1793,6 @@
       renderPortalUI();
     });
 
-    // 7. Cloudinary Video Helper & Scroll Auto-Play Observer
     function getOptimizedCloudinaryVideo(rawUrl) {
       if (!rawUrl || typeof rawUrl !== "string") return { src: "", poster: "" };
       if (rawUrl.includes("res.cloudinary.com") && rawUrl.includes("/video/upload/")) {
@@ -1867,7 +1833,6 @@
         : '<i class="fa-solid fa-volume-high"></i>';
     };
 
-    // 8. Listen to Default Marriage Hall Photos, Videos & Additional Dynamic Businesses
     onValue(ref(db, "gallery/photos"), (snapshot) => {
       defaultHallPhotos = snapshot.exists() ? snapshot.val() : {};
       renderPortalUI();
@@ -1883,10 +1848,8 @@
       renderPortalUI();
     });
 
-    // Apply initial language
     window.setLanguage(currentLang);
 
-    // 9. Send Inquiry to WhatsApp (Automatically includes selected Business Name!)
     window.sendWhatsAppInquiry = function(e) {
       e.preventDefault();
       playClickSFX();
@@ -1917,7 +1880,7 @@
         `👥 *Guests:* ${encodeURIComponent(guests)}%0A` +
         `💬 *Message:* ${encodeURIComponent(message)}`;
 
-      const targetNumber = (currentSettings.whatsapp || "917520750999").replace(/\D/g, "");
+      const targetNumber = (siteSettings.whatsapp || "917520750999").replace(/\D/g, "");
       window.open(`https://wa.me/${targetNumber}?text=${text}`, "_blank");
     };
   </script>
